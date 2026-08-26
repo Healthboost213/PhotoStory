@@ -20,6 +20,7 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 - Images seperated by Dates
 - Complete Album CRUD Implementation
 - Complete S3 Support
+- EXIF Metadata Support
 
 ### Long Term Project Roadmap:
 - [ ] HTTPS + TLS Support
@@ -35,9 +36,7 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 ![Image Preview](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1787749883/Screenshot_2026-08-26_184058_ox9mpd.png)
 
 > [!CAUTION]
-> ### A Word Of Caution:
 > PhotoStory is currently in the MVP phase. There are some security issues that still need ironing out. HTTPS is **NOT** supported yet so please refrain from using this application over public Wi-Fi or exposing it to the internet.  
 
 > [!NOTE]
-> ### A Small Note:
 > Moving forward, I have lots of exams to deal with so development will be slow or temporarily halted. Updates aren't guaranteed and I'm not sure I can provide support for this. I only released a simple PoC because I've been working on this project for a long time and it covers the basic essentials I need for my needs. Feel free to modify the code however you please.  
