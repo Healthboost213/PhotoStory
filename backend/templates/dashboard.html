@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoStory</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-color: #131a29;
+        }
+
+        .container {
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .content-panel {
+
+            height: 90%;
+            width: 90%;
+            
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            
+
+            padding: 20px;
+            border: 5px solid #0066ff;
+            border-radius: 5px;
+
+
+            background-color: white;
+
+        }
+
+        .user-deletion-form {
+            min-height: 0;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .user-deletion-form form {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 10px;
+        }
+
+        .scrollable-form {
+
+            flex: 4;
+
+            min-height: 0;
+            overflow-y: auto;
+            scrollbar-width: none;
+
+            display: grid;
+            grid-template-columns: 1fr 3fr 3fr;
+            grid-auto-rows: 10%;
+
+            border: 3px solid black;
+            border-radius: 5px;
+
+        }
+
+        .delete-form-actions {
+            
+            flex: 1;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            border: 3px solid black;
+            border-radius: 5px;
+
+        }
+
+        .grid-item {
+
+            display: flex;
+            align-items: center;
+
+            padding-left: 10px;
+            border-bottom: 2px solid rgb(189, 189, 189);
+            border-left: 2px solid rgb(189, 189, 189);
+
+            background: #f5f3f3;
+        }
+
+        .user-addition-form {
+
+            display: flex;
+            flex-direction: column;
+
+            border: 3px solid black;
+            border-radius: 5px;
+        }
+
+        .user-addition-form form {
+
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            padding: 15px;
+
+        }
+
+        .input-text-box {
+            width: 300px;
+            height: 50px;
+        }
+
+        .submit-button {
+            height: 40px;
+            width: 300px;
+            margin-top: 10px;
+        }
+
+        .text-label {
+            margin-bottom: 5px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="content-panel">
+
+            <div class="user-deletion-form">
+                
+                <form action="/users/delete" method="post">
+    
+                    <div class="scrollable-form">
+
+                        <div class="grid-item"></div>
+                        <div class="grid-item">Username</div>
+                        <div class="grid-item">Count of Images</div>
+
+                        {% for username, count_of_images in user_data.items() %}
+
+                            <div class="grid-item">
+                                <input type="checkbox" name="{{ username }}" id="">
+                            </div>
+                            <div class="grid-item">{{ username }}</div>
+                            <div class="grid-item">{{ count_of_images }}</div>
+
+                        {% endfor %}
+
+                        
+
+                    </div>
+
+                    <div class="delete-form-actions">
+
+                        <input type="submit" value="Delete Users" class="submit-button">
+
+                    </div>
+
+                </form>
+            
+            </div>
+
+            <div class="user-addition-form">
+
+                <form action="/users/add" method="post">
+
+                    <label for="username" class="text-label">Username</label>
+                    <input type="text" name="username" id="username" class="input-text-box" required><br>
+                    <label for="password" class="text-label">Password</label>
+                    <input type="text" name="password" id="password" class="input-text-box" required>
+
+                    <input type="submit" value="Add User" class="submit-button">
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    
+</body>
+</html>

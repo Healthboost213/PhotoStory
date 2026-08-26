@@ -1,0 +1,61 @@
+:root {
+    
+    /* Album Panel */
+    --album-panel-background: #081123;
+    --logo-section-background: #050A1D;
+
+    /* Gallery Grid */
+    --main-grid-background: #131A29;
+    --image-area-background: rgb(24, 32, 55);
+
+    /* Image Preview */
+    --image-preview-background: rgba(9, 6, 6, 0.842);
+    --image-details-background: #0B1121;
+    --image-div-background: #111626;
+    --image-icon-background: #181E30;
+
+    /* Menu & Pop-ups */
+    --popup-background: #0F151E;
+    --popup-text-background: #0A101B;
+    
+
+    /* Upload Notification */
+    --upload-notification-background: rgba(39, 55, 77, 0.958);
+    --upload-bar-color: rgb(8, 129, 235);
+
+    /* Buttons */
+    --upload-button-background: #0048fff7;
+    --upload-button-hover: #000fddf7;
+    --logout-button-color: #E63E32;
+    --logout-button-color-hover: #FF746C;
+    --cancel-button-background: #1B212F;
+    --cancel-button-hover: #161a25;
+
+    /* Border Colors */
+    --primary-border-color: #122041;
+    --preview-border-color: #192032;
+    --popup-border-color: #212632;
+
+}
+
+@font-face {
+    font-family: 'Lexend';
+    src: url('assets/fonts/Lexend-Light.ttf');
+}
+
+body, html {
+    margin: 0px;
+    padding: 0px
+}
+
+body {
+    background-color: rgb(255, 255, 255);
+    color: #ffffff;
+    font-family: 'Lexend';
+    
+    letter-spacing: 0.4px;
+}
+
+button {
+    font-family: 'Lexend';
+}
