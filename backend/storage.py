@@ -57,8 +57,8 @@ class S3Storage(FileStorage):
 class LocalStorage(FileStorage):
     
     def __init__(self):
-        self.__ImageDirectory = Path.cwd() / 'PhotoStory' / 'Images'
-        self.__ThumbnailDirectory = Path.cwd() / 'PhotoStory' / 'Thumbnails'
+        self.__ImageDirectory = Path(__file__).resolve().parent / 'PhotoStory' / 'Images'
+        self.__ThumbnailDirectory = Path(__file__).resolve().parent / 'PhotoStory' / 'Thumbnails'
         self.__ImageDirectory.mkdir(parents=True, exist_ok=True)
         self.__ThumbnailDirectory.mkdir(parents=True, exist_ok=True)
         
