@@ -7,10 +7,10 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 import uuid, hashlib
 
-dbPath = Path().cwd() / 'db'
+dbPath = Path(__file__).resolve().parent / 'db'
 dbPath.mkdir(parents=True, exist_ok=True)
-
-engine = create_engine('sqlite+pysqlite:///db/image_data.db')
+dbFilePath = dbPath.joinpath('images.db')
+engine = create_engine(f'sqlite+pysqlite:///{dbFilePath.as_posix()}')
 
 # Database Definitions
 
