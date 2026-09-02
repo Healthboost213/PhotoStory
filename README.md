@@ -18,7 +18,6 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 ### Short-term Features Planned:
 - Brand New Logo Design
 - Images seperated by Dates
-- Complete Album CRUD Implementation
 - Complete S3 Support
 - EXIF Metadata Support
 
