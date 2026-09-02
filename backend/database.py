@@ -5,7 +5,7 @@ from datetime import date
 from pathlib import Path
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-import uuid, hashlib
+import uuid
 
 dbPath = Path(__file__).resolve().parent / 'db'
 dbPath.mkdir(parents=True, exist_ok=True)

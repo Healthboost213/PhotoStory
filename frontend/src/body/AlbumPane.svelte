@@ -3,8 +3,10 @@
     import AlbumAdd from "../overlay/AlbumAdd.svelte"
 
     import { baseUrlState } from "../store.svelte.js"
+
     import logOutIcon from "../assets/icons/arrow-right-from-bracket.svg"
     import userAccountIcon from "../assets/icons/circle-user.svg"
+    import trashIcon from "../assets/icons/trash-can-white.svg"
 
     let { currentAlbum , changeCurrentAlbum, currentUsername, albumObject, initAlbums } = $props()
 
@@ -25,6 +27,25 @@
         window.location.reload()
     }
 
+    async function deleteAlbum() {
+
+        if (currentAlbum === "All") return
+        if (currentAlbum === "Favourite") return
+        
+        const url = `http://${baseUrlState.currentIP}/api/albums/delete`
+        const message = {album_id: albumObject[currentAlbum]}
+
+        const request = await fetch(url, {method: "POST", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})
+        const response = await request.json()
+        
+        if (response.status === "success") {
+            changeCurrentAlbum("All")
+            initAlbums()
+        }
+        
+        
+    }
+
     // Add Album Menu
 
     function openAlbumAddMenu() {
@@ -34,7 +55,6 @@
     function closeAlbumAddMenu() {
         albumAddMenuOpen = false
         initAlbums()
-        albumRefresh++
     }
     
     let derivedAlbumObject = $derived(albumObject)
@@ -49,15 +69,36 @@
 
 <div class="album-section">
 
-    <h5 class="header-text">Library</h5>
+    <div class="header-div">
+
+        <h5 class="header-text">Library</h5>
+
+        {#if (currentAlbum !== "All") && (currentAlbum !== "Favourite")}
+            <button class="delete-album-div" onclick={deleteAlbum}>
+                <img class="delete-icon" src={trashIcon} alt="">
+            </button>
+        {/if}
+
+    </div>
 
     <div class="album-list">
         
-        <button id="All" class={currentAlbum === "All" ? "selected-album" : null} onclick={toggleSelectedAlbum}><h4>All</h4></button>
-        <button id="Favourite" class={currentAlbum === "Favourite" ? "selected-album" : null} onclick={toggleSelectedAlbum}><h4>Favourite</h4></button>
+        <button id="All" class={currentAlbum === "All" ? "selected-album" : null} onclick={toggleSelectedAlbum}>
+            <h4>All</h4>
+        </button>
+
+        <button id="Favourite" class={currentAlbum === "Favourite" ? "selected-album" : null} onclick={toggleSelectedAlbum}>
+            <h4>Favourite</h4>
+        </button>
+
         {#each Object.keys(derivedAlbumObject) as albumNames}
-            <button id={albumNames} class={currentAlbum === albumNames ? "selected-album" : null} onclick={toggleSelectedAlbum}><h4>{albumNames}</h4></button>
+            
+            <button id={albumNames} class={currentAlbum === albumNames ? "selected-album" : null} onclick={toggleSelectedAlbum}>
+                <h4>{albumNames}</h4>
+            </button>
+
         {/each}
+
         <button onclick={openAlbumAddMenu}><h4>+ Add Album</h4></button>
 
     </div>
@@ -123,11 +164,16 @@
         background-color: var(--primary-border-color);
     }
 
-    /* text styling */
+    /* header */
+
+    .header-div {
+        display: flex;
+        align-items: center;
+    }
 
     .header-text {
         color: #ffffff;
-        margin-left: 15px;
+        margin-left: 20px;
         font-size: 15px;
     }
 
@@ -188,6 +234,34 @@
         color: white;
         font-size: 14px;
 
+    }
+
+    .delete-album-div {
+        
+        align-self: center;
+
+        height: 35px;
+        width: 35px;
+        
+        margin-left: auto;
+        margin-right: 20px;
+        border: 2px solid white;
+        border-radius: 3px;
+        
+        background-color: var(--logout-button-color);
+        transition: 0.2s;
+    }
+
+    .delete-album-div:hover {
+        
+        transition: 0.2s;
+        background-color: var(--logout-button-color-hover);
+
+    }
+
+    .delete-icon {
+        height: 100%;
+        width: 100%;
     }
 
     /* Profile Section */
