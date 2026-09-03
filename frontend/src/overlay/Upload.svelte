@@ -6,7 +6,6 @@
     
     $effect(() => {
         let ruler = document.getElementById("currentProgressRuler")
-        console.log(ruler)
         ruler.style.width = progressPercent + "%"
     })
 
