@@ -24,8 +24,6 @@
         if (uploadState.globalCurrentTotal > 0) {
 
             uploadState.isUploading = true
-            
-            let start = performance.now()
 
             for (let i = 0; i< fileList.length; i+=5) {
 
@@ -41,8 +39,6 @@
                 await Promise.allSettled(promiseList)
                 
             }
-
-            console.log(performance.now() - start)
 
             uploadState.isUploading = false
             uploadState.globalCurrentUploaded = 0
