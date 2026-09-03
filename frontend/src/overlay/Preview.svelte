@@ -37,7 +37,6 @@
         const url = `http://${baseUrlState.currentIP}/api/delete/${currentImageId}`
         const response = await fetch(url, {method: "POST", credentials: "include"})
         const result = await response.json()
-        console.log(result)
         closePreview()
         refreshGrid()
 

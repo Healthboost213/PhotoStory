@@ -8,7 +8,6 @@
 
     async function moveImageToAlbum(event) {
 
-        console.log(derivedAlbums)
         let albumIdToMove
         if (event.currentTarget.id === "Favourite") {
             albumIdToMove = fID
@@ -23,7 +22,6 @@
         const response = await request.json()
 
         closeMenu()
-
 
     }
 

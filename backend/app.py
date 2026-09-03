@@ -19,7 +19,7 @@ app.permanent_session_lifetime = timedelta(days=14)
 
 app.config['SESSION_COOKIE_SAMESITE'] = "Lax"
 app.config['SESSION_COOKIE_SECURE'] = False
-app.config['SESSION_COOKIE_HTTPONLY']
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 CORS(app, origins=r"^http://.*$", supports_credentials=True)
 
@@ -118,9 +118,7 @@ def upload():
         if len(files) == 0: 
             return jsonify({'status': 'failed', 'message': 'No Files Uploaded'}), 400
 
-        for count, file in enumerate(files):
-
-            print("Handling Image No:", count)
+        for file in files:
 
             filename = file.filename
             file_ext = os.path.splitext(filename)[1]

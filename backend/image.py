@@ -23,8 +23,7 @@ def scrape_metadata(file_data, filename):
         image_metadata['img_date_taken'] = date(year_var, month_var, date_var)
     except:
         image_metadata['img_date_taken'] = date.today()
-
-    print(image_metadata['img_date_taken'])
+        
     return image_metadata
 
 def generate_thumbnails(file_data):
