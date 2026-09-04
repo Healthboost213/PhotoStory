@@ -63,6 +63,8 @@
 
 <div class="logo-section">
 
+    <h1 class="temp-logo-text">PhotoStory</h1>
+
 </div>
 
 {#key albumRefresh}
@@ -133,6 +135,11 @@
     /* div styling */
 
     .logo-section {
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         height: 120px;
         background-color: var(--logo-section-background);
     }
@@ -162,6 +169,13 @@
         width: 90%; 
         
         background-color: var(--primary-border-color);
+    }
+
+    /* logo section */
+
+    .temp-logo-text {
+        letter-spacing: 1px;
+        color: #2f7dd0;
     }
 
     /* header */
