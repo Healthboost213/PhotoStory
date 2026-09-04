@@ -3,14 +3,14 @@ from flask_cors import CORS
 from datetime import timedelta
 from functools import wraps
 from dotenv import load_dotenv
-import os
+import os, json
 
 load_dotenv(override=True)
 
 from database import authenticate_user_with_db, add_user, delete_user, get_user_statistics, check_owner_match
 from database import insert_image, get_list_offset, delete_image, find_image
 from database import get_album_list, create_album, delete_album, add_image_to_album, del_image_from_album
-from image import generate_thumbnails, scrape_metadata
+from image import generate_thumbnails, scrape_metadata, scrape_exif
 from storage import storage
 
 app = Flask(__name__)
@@ -125,13 +125,15 @@ def upload():
             file_data = file.read()
             
             image_metadata = scrape_metadata(file_data, filename)
+            exif_metadata = scrape_exif(file_data)
             file_hash = image_metadata['img_id'].hex()
             thumbnail_data = generate_thumbnails(file_data)
 
             storage.upload(file_hash, file_ext, file_data)
             storage.upload_thumbnail(file_hash, thumbnail_data)
 
-            insert_image(**image_metadata, username=session.get('user_id'))
+            insert_image(**image_metadata, exif_data=json.dumps(exif_metadata), username=session.get('user_id'))
+            
 
     return jsonify({'status': 'success'}), 200
 
@@ -182,7 +184,8 @@ def get_image_data(image_id):
             'ImageName': image_data[1],
             'ImageXRes': image_data[2],
             'ImageYRes': image_data[3],
-            'ImageDateTaken': image_data[4].isoformat()
+            'ImageDateTaken': image_data[4].isoformat(),
+            'ExifData': json.loads(image_data[5])
         }
         return jsonify(image_json), 200
     except:

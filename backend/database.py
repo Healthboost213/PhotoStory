@@ -33,6 +33,7 @@ class Images(Base):
     ImageXRes : Mapped[int] = mapped_column()
     ImageYRes : Mapped[int] = mapped_column()
     DateTaken : Mapped[date] = mapped_column()
+    ExifData : Mapped[str] = mapped_column()
 
 class Albums(Base):
     
@@ -113,7 +114,7 @@ def authenticate_user_with_db(user_id, password):
 
 # Database Image Operations
 
-def insert_image(img_id, img_name, img_x_res, img_y_res, img_date_taken, username):
+def insert_image(img_id, img_name, img_x_res, img_y_res, img_date_taken, exif_data, username):
     with Session(engine) as session:
         try:
 
@@ -121,7 +122,7 @@ def insert_image(img_id, img_name, img_x_res, img_y_res, img_date_taken, usernam
             result = session.scalars(select_stmt).first()
 
             if result is None:
-                session.add(Images(ImageId=img_id, ImageName=img_name, ImageXRes=img_x_res, ImageYRes=img_y_res, DateTaken=img_date_taken)) 
+                session.add(Images(ImageId=img_id, ImageName=img_name, ImageXRes=img_x_res, ImageYRes=img_y_res, DateTaken=img_date_taken, ExifData=exif_data))
             
             user_linker = UserImages(ImageId=img_id, UserName=username)
             session.add(user_linker)
@@ -139,7 +140,7 @@ def find_image(username, img_id):
     with Session(engine) as session:
         select_stmt = select(Images).join(UserImages, UserImages.ImageId == Images.ImageId).where(Images.ImageId == img_id, UserImages.UserName == username)
         values = session.scalars(select_stmt).first()
-        return (values.ImageId.hex(), values.ImageName, values.ImageXRes, values.ImageYRes, values.DateTaken)
+        return (values.ImageId.hex(), values.ImageName, values.ImageXRes, values.ImageYRes, values.DateTaken, values.ExifData)
     
 def get_list_offset(username, offset, album_id):
     with Session(engine) as session:
