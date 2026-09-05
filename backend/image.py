@@ -4,9 +4,14 @@ from scipy.spatial import cKDTree
 from pathlib import Path
 import hashlib, pyvips, exif, pickle
 
+hasGeocoding = False
 world_data_path = Path(__file__).resolve().parent / 'db' / 'world_data.pkl'
-with open(world_data_path, 'rb') as f:
-    kd_tree, city_data = pickle.load(f)
+try:
+    with open(world_data_path, 'rb') as f:
+        kd_tree, city_data = pickle.load(f)
+        hasGeocoding = True
+except FileNotFoundError:
+    hasGeocoding = False
 
 def scrape_metadata(file_data, filename):
 
@@ -67,7 +72,10 @@ def scrape_exif(file_data):
         lat_coord = coord_converter(img.get('gps_latitude', default=0), img.get('gps_latitude_ref', default=""))
         long_coord = coord_converter(img.get('gps_longitude', default=0), img.get('gps_longitude_ref', default=""))
 
-        exif_metadata['gps']['location'] = geospatial_location_finder(lat_coord, long_coord)
+        if hasGeocoding:
+            exif_metadata['gps']['location'] = geospatial_location_finder(lat_coord, long_coord)
+        else:
+            exif_metadata['gps']['location'] = ""
         
     except Exception as e:
         print(e)

@@ -41,7 +41,7 @@
         const response = await request.json()
 
         imageData = response
-        
+
         if (Object.keys(imageData.ExifData.camera).length !== 0) {
             exifPresent = true
         }
@@ -262,7 +262,7 @@
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">OSM Link</h5>
-                    <h5 class="section-info-text"></h5>
+                    <h5 class="section-info-text">-</h5>
                 </div>
             </div>
             {/if}
