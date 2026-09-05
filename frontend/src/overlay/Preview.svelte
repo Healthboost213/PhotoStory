@@ -4,6 +4,15 @@
     import hashIcon from '../assets/icons/preview/hashtag.svg'
     import resoIcon from '../assets/icons/preview/ruler-combined.svg'
     import calendarIcon from '../assets/icons/preview/calendar.svg'
+
+    import cameraIcon from '../assets/icons/preview/camera.svg'
+    import shutterSpeedIcon from '../assets/icons/preview/stopwatch.svg'
+    import apertureIcon from '../assets/icons/preview/aperture.svg'
+    import isoIcon from '../assets/icons/preview/lightbulb.svg'
+
+    import globeIcon from '../assets/icons/preview/globe.svg'
+    import mapIcon from '../assets/icons/preview/map.svg'
+    import locationIcon from '../assets/icons/preview/location-dot.svg'
     
     import closeIcon from '../assets/icons/preview/xmark.svg'
     import chevronRight from '../assets/icons/preview/chevron-right.svg'
@@ -107,6 +116,7 @@
 
     <div class="image-menu">
 
+        <!-- USE SNIPPETS LATER AND ADD REUSABILITY -->
         
         <div class="image-details">
 
@@ -182,7 +192,7 @@
             {#if pageState === 1}
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={fileIcon} alt="">
+                    <img src={cameraIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Make & Model</h5>
@@ -191,7 +201,7 @@
             </div>
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={hashIcon} alt="">
+                    <img src={shutterSpeedIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Shutter Speed</h5>
@@ -200,7 +210,7 @@
             </div>
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={resoIcon} alt="">
+                    <img src={apertureIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Aperture Size</h5>
@@ -209,7 +219,7 @@
             </div>
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={calendarIcon} alt="">
+                    <img src={isoIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">ISO</h5>
@@ -221,7 +231,7 @@
             {#if pageState === 2}
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={fileIcon} alt="">
+                    <img src={globeIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Latitude</h5>
@@ -230,7 +240,7 @@
             </div>
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={hashIcon} alt="">
+                    <img src={globeIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Longitude</h5>
@@ -239,7 +249,7 @@
             </div>
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={resoIcon} alt="">
+                    <img src={mapIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Location</h5>
@@ -248,7 +258,7 @@
             </div>
             <div class="info-div">
                 <div class="field-icon">
-                    <img src={calendarIcon} alt="">
+                    <img src={locationIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">OSM Link</h5>
