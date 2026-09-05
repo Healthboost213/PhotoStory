@@ -1,9 +1,12 @@
 from datetime import date
 from enum import Enum
-import hashlib, pyvips, exif
+from scipy.spatial import cKDTree
+from pathlib import Path
+import hashlib, pyvips, exif, pickle
 
-# Pillow is far more stricter with image formats.
-# Therefore I have opted to use cv2 which offers greater compatibility.
+world_data_path = Path(__file__).resolve().parent / 'db' / 'world_data.pkl'
+with open(world_data_path, 'rb') as f:
+    kd_tree, city_data = pickle.load(f)
 
 def scrape_metadata(file_data, filename):
 
@@ -27,23 +30,49 @@ def scrape_metadata(file_data, filename):
         
     return image_metadata
 
+def coord_converter(coord, ref): 
+    if (ref == "N") or (ref == "E"):
+        final = round((coord[0] + (coord[1] / 60) + (coord[2] / 3600)), 4)
+        return final
+    elif (ref == "S") or (ref == "W"):
+        final = round((coord[0] + (coord[1] / 60) + (coord[2] / 3600)), 4)
+        return -final
+    else:
+        return None
+
+def geospatial_location_finder(x_coord, y_coord):
+    _, index = kd_tree.query((x_coord, y_coord))
+    baseStr = city_data[index]['name'] + ", " + city_data[index]['country_code']
+    return baseStr
+
 def scrape_exif(file_data):
 
-    exif_metadata = {}
-    try:
-        img = exif.Image(file_data)
-        available_exif_fields = img.list_all()
-        valid_json_types = (str, int, float, bool, list, tuple, dict)
+    exif_metadata = {'camera' : {}, 'gps' : {}}
 
-        for exif_field in available_exif_fields:
-            current_data = img.get(exif_field)
-            if isinstance(current_data, Enum):
-                exif_metadata[exif_field] = current_data.name
-            elif isinstance(current_data, valid_json_types):
-                exif_metadata[exif_field] = current_data
-    except:
-        pass
-    
+    try:
+
+        img = exif.Image(file_data)
+
+        exif_metadata['camera']['make'] = img.get('make', default="")
+        exif_metadata['camera']['model'] = img.get('model', default="")
+        exif_metadata['camera']['shutter_speed'] = img.get('exposure_time', default="")
+        exif_metadata['camera']['aperture_size'] = img.get('f_number', default="")
+        exif_metadata['camera']['iso'] = img.get('photographic_sensitivity', default="")
+
+        exif_metadata['gps']['latitude'] = img.get('gps_latitude', default="")
+        exif_metadata['gps']['latitude_ref'] = img.get('gps_latitude_ref', default="")
+        exif_metadata['gps']['longitude'] = img.get('gps_longitude', default="")
+        exif_metadata['gps']['longitude_ref'] = img.get('gps_longitude_ref', default="")
+
+        lat_coord = coord_converter(img.get('gps_latitude', default=0), img.get('gps_latitude_ref', default=""))
+        long_coord = coord_converter(img.get('gps_longitude', default=0), img.get('gps_longitude_ref', default=""))
+
+        exif_metadata['gps']['location'] = geospatial_location_finder(lat_coord, long_coord)
+        
+    except Exception as e:
+        print(e)
+
+    print(exif_metadata)
     return exif_metadata
 
 def generate_thumbnails(file_data):

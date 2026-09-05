@@ -40,12 +40,11 @@
         const request = await fetch(url, {method: "GET", credentials: "include"})
         const response = await request.json()
 
-        
         imageData = response
-        if (Object.keys(imageData.ExifData).length !== 0) {
+        
+        if (Object.keys(imageData.ExifData.camera).length !== 0) {
             exifPresent = true
         }
-        console.log(imageData)
     }
 
     function openImageInNewTab() {
@@ -94,6 +93,7 @@
 
     function processCoordinates(coordArray, coord_ref) {
         try {
+            if (coordArray === "" && coord_ref === "") return "-"
             let baseStr = String((coordArray[0] + (coordArray[1] / 60) + (coordArray[2] / 3600)).toFixed(4) ) + " " + coord_ref
             return baseStr
         } catch {
@@ -196,7 +196,7 @@
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Make & Model</h5>
-                    <h5 class="section-info-text">{imageData.ExifData.make} {imageData.ExifData.model}</h5>
+                    <h5 class="section-info-text">{imageData.ExifData.camera.make} {imageData.ExifData.camera.model}</h5>
                 </div>
             </div>
             <div class="info-div">
@@ -205,7 +205,7 @@
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Shutter Speed</h5>
-                    <h5 class="section-info-text">{processShutterSpeed(imageData.ExifData.exposure_time)} s</h5>
+                    <h5 class="section-info-text">{processShutterSpeed(imageData.ExifData.camera.shutter_speed)} s</h5>
                 </div>
             </div>
             <div class="info-div">
@@ -214,7 +214,7 @@
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Aperture Size</h5>
-                    <h5 class="section-info-text">ƒ/{imageData.ExifData.f_number}</h5>
+                    <h5 class="section-info-text">ƒ/{imageData.ExifData.camera.aperture_size}</h5>
                 </div>
             </div>
             <div class="info-div">
@@ -223,7 +223,7 @@
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">ISO</h5>
-                    <h5 class="section-info-text">ISO {imageData.ExifData.photographic_sensitivity}</h5>
+                    <h5 class="section-info-text">ISO {imageData.ExifData.camera.iso}</h5>
                 </div>
             </div>
             {/if}
@@ -235,7 +235,7 @@
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Latitude</h5>
-                    <h5 class="section-info-text">{processCoordinates(imageData.ExifData.gps_latitude, imageData.ExifData.gps_latitude_ref)}</h5>
+                    <h5 class="section-info-text">{processCoordinates(imageData.ExifData.gps.latitude, imageData.ExifData.gps.latitude_ref)}</h5>
                 </div>
             </div>
             <div class="info-div">
@@ -244,21 +244,21 @@
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">Longitude</h5>
-                    <h5 class="section-info-text">{processCoordinates(imageData.ExifData.gps_longitude, imageData.ExifData.gps_longitude_ref)}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={mapIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Location</h5>
-                    <h5 class="section-info-text"></h5>
+                    <h5 class="section-info-text">{processCoordinates(imageData.ExifData.gps.longitude, imageData.ExifData.gps.longitude_ref)}</h5>
                 </div>
             </div>
             <div class="info-div">
                 <div class="field-icon">
                     <img src={locationIcon} alt="">
+                </div>
+                <div class="info-sub-div">
+                    <h5 class="section-header">Location</h5>
+                    <h5 class="section-info-text">{imageData.ExifData.gps.location}</h5>
+                </div>
+            </div>
+            <div class="info-div">
+                <div class="field-icon">
+                    <img src={mapIcon} alt="">
                 </div>
                 <div class="info-sub-div">
                     <h5 class="section-header">OSM Link</h5>
