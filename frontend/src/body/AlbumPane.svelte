@@ -7,6 +7,8 @@
     import logOutIcon from "../assets/icons/arrow-right-from-bracket.svg"
     import userAccountIcon from "../assets/icons/circle-user.svg"
     import trashIcon from "../assets/icons/trash-can-white.svg"
+    import folderIcon from "../assets/icons/folder.svg"
+    import folderOpenIcon from "../assets/icons/folder-open.svg"
 
     let { currentAlbum , changeCurrentAlbum, currentUsername, albumObject, initAlbums } = $props()
 
@@ -86,16 +88,19 @@
     <div class="album-list">
         
         <button id="All" class={currentAlbum === "All" ? "selected-album" : null} onclick={toggleSelectedAlbum}>
+            <img src={currentAlbum === "All" ? folderOpenIcon : folderIcon} alt="" class="folder-icon">
             <h4>All</h4>
         </button>
 
         <button id="Favourite" class={currentAlbum === "Favourite" ? "selected-album" : null} onclick={toggleSelectedAlbum}>
+            <img src={currentAlbum === "Favourite" ? folderOpenIcon : folderIcon} alt="" class="folder-icon">
             <h4>Favourite</h4>
         </button>
 
         {#each Object.keys(derivedAlbumObject) as albumNames}
             
             <button id={albumNames} class={currentAlbum === albumNames ? "selected-album" : null} onclick={toggleSelectedAlbum}>
+                <img src={currentAlbum === albumNames ? folderOpenIcon : folderIcon} alt="" class="folder-icon">
                 <h4>{albumNames}</h4>
             </button>
 
@@ -243,11 +248,17 @@
     .album-list > button > h4 {
        
         align-self: center;
-        padding-left: 15px;
+        padding-left: 10px;
         
         color: white;
         font-size: 14px;
 
+    }
+
+    .folder-icon {
+        display: block;
+        width: 30px;
+        margin-left: 5px;
     }
 
     .delete-album-div {
