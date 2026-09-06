@@ -29,8 +29,8 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 
 ### Screenshots:
 
-![Main Gallery](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1787749883/Screenshot_2026-08-26_184038_cclhyl.png)
-![Image Preview](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1787749883/Screenshot_2026-08-26_184058_ox9mpd.png)
+![Main Gallery](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1788697691/Screenshot_2026-09-06_175526_oagwua.png)
+![Image Preview](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1788697690/Screenshot_2026-09-06_175535_gbgffb.png)
 
 > [!CAUTION]
 > PhotoStory is currently in the MVP phase. There are some security issues that still need ironing out. HTTPS is **NOT** supported yet so please refrain from using this application over public Wi-Fi or exposing it to the internet.  
