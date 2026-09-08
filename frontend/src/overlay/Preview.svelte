@@ -150,121 +150,37 @@
 
             </div>
 
+            {#snippet infoDiv(icon, header, data)}
+                <div class="info-div">
+                    <div class="field-icon">
+                        <img src={icon} alt="">
+                    </div>
+                    <div class="info-sub-div">
+                        <h5 class="section-header">{header}</h5>
+                        <h5 class="section-info-text">{(data) ? data : "-"}</h5>
+                    </div>
+                </div>
+            {/snippet}
+
             {#if pageState === 0}
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={fileIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Image Name</h5>
-                    <h5 class="section-info-text">{imageData.ImageName}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={hashIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Image ID</h5>
-                    <h5 class="section-info-text">{imageData.ImageId}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={resoIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Image Resolution</h5>
-                    <h5 class="section-info-text">{imageData.ImageXRes}px x {imageData.ImageYRes}px</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={calendarIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Date Taken</h5>
-                    <h5 class="section-info-text">{imageData.ImageDateTaken}</h5>
-                </div>
-            </div>
+                {@render infoDiv(fileIcon, "Image Name", imageData.ImageName)}
+                {@render infoDiv(hashIcon, "Image ID", imageData.ImageId)}
+                {@render infoDiv(resoIcon, "Image Resolution", (imageData.ImageXRes + "px x " + imageData.ImageYRes + "px"))}
+                {@render infoDiv(hashIcon, "Date Taken", imageData.ImageDateTaken)}
             {/if}
 
             {#if pageState === 1}
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={cameraIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Make & Model</h5>
-                    <h5 class="section-info-text">{imageData.ExifData.camera.make} {imageData.ExifData.camera.model}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={shutterSpeedIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Shutter Speed</h5>
-                    <h5 class="section-info-text">{processShutterSpeed(imageData.ExifData.camera.shutter_speed)} s</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={apertureIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Aperture Size</h5>
-                    <h5 class="section-info-text">ƒ/{imageData.ExifData.camera.aperture_size}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={isoIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">ISO</h5>
-                    <h5 class="section-info-text">ISO {imageData.ExifData.camera.iso}</h5>
-                </div>
-            </div>
+                {@render infoDiv(cameraIcon, "Make & Model", (imageData.ExifData.camera.make, imageData.ExifData.camera.model))}
+                {@render infoDiv(shutterSpeedIcon, "Shutter Speed", (processShutterSpeed(imageData.ExifData.camera.shutter_speed) + " s"))}
+                {@render infoDiv(apertureIcon, "Aperture Size", ("ƒ/" + imageData.ExifData.camera.aperture_size))}
+                {@render infoDiv(isoIcon, "ISO", ("ISO" + imageData.ExifData.camera.iso))}
             {/if}
 
             {#if pageState === 2}
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={globeIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Latitude</h5>
-                    <h5 class="section-info-text">{processCoordinates(imageData.ExifData.gps.latitude, imageData.ExifData.gps.latitude_ref)}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={globeIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Longitude</h5>
-                    <h5 class="section-info-text">{processCoordinates(imageData.ExifData.gps.longitude, imageData.ExifData.gps.longitude_ref)}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={locationIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">Location</h5>
-                    <h5 class="section-info-text">{imageData.ExifData.gps.location}</h5>
-                </div>
-            </div>
-            <div class="info-div">
-                <div class="field-icon">
-                    <img src={mapIcon} alt="">
-                </div>
-                <div class="info-sub-div">
-                    <h5 class="section-header">OSM Link</h5>
-                    <h5 class="section-info-text">-</h5>
-                </div>
-            </div>
+                {@render infoDiv(globeIcon, "Latitude", processCoordinates(imageData.ExifData.gps.latitude, imageData.ExifData.gps.latitude_ref))}
+                {@render infoDiv(globeIcon, "Longitude", processCoordinates(imageData.ExifData.gps.longitude, imageData.ExifData.gps.longitude_ref))}
+                {@render infoDiv(locationIcon, "Location", (imageData.ExifData.gps.location))}
+                {@render infoDiv(mapIcon, "OSM Link", "-")}
             {/if}
 
         </div>
