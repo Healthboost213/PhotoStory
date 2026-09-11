@@ -18,7 +18,7 @@ class FileStorage:
     def download_thumb(self, filename):
         pass
 
-    def delete_func(self, filename):
+    def delete_func(self, filename, file_ext):
         pass
 
 class S3Storage(FileStorage):
@@ -52,8 +52,9 @@ class S3Storage(FileStorage):
         downloaded_File = self.s3.download_fileobj(self.bucket_name, f'thumbnails/{filename}.webp', loaded_data)
         return loaded_data
 
-    def delete_func(self, filename):
-        pass
+    def delete_func(self, filename, file_ext):
+        self.s3.delete_object(Bucket=self.bucket_name, Key=f'images/{filename}{file_ext}')
+        self.s3.delete_object(Bucket=self.bucket_name, Key=f'thumbnails/{filename}.webp')
 
 class LocalStorage(FileStorage):
     
@@ -119,12 +120,11 @@ class LocalStorage(FileStorage):
 
         return plaintext
     
-    def delete_func(self, filename):
-        for path in self.__ImageDirectory.glob(filename + '*'):
-            path.unlink()
-
-        for path in self.__ThumbnailDirectory.glob(filename + '*'):
-            path.unlink()
+    def delete_func(self, filename, file_ext):
+        im_path = self.__ImageDirectory / (filename + file_ext)
+        im_path.unlink()
+        thumb_path = self.__ThumbnailDirectory / (filename + '.webp')
+        thumb_path.unlink()
  
 storage = None
 if os.getenv('STORAGE_BACKEND') == 's3':
