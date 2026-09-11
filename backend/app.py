@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, request, render_template, session, send_file, redirect
+from flask_session import Session
+from cachelib import FileSystemCache
 from flask_cors import CORS
 from datetime import timedelta
 from functools import wraps
@@ -17,11 +19,15 @@ app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET')
 app.permanent_session_lifetime = timedelta(days=14)
 
-app.config['SESSION_COOKIE_SAMESITE'] = "Lax"
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 
-CORS(app, origins=r"^http://.*$", supports_credentials=True)
+app.config['SESSION_TYPE'] = "cachelib"
+app.config['SESSION_CACHELIB'] = FileSystemCache(cache_dir='./flask_sessions', threshold=250)
+
+CORS(app, origins=r'^http://.*$', supports_credentials=True)
+Session(app)
 
 # User Mgmt + Dashboard (SSR)
 
@@ -62,7 +68,7 @@ def create_new_user():
 @app.route('/users/delete', methods=['POST'])
 def delete_existing_user():
     if 'superuser' in session:
-        if request.method == "POST":
+        if request.method == 'POST':
             form_data = request.form
             for users in form_data.keys():
                 delete_user(users)
@@ -146,8 +152,8 @@ def send_thumbnail_list(alb_id, offset_num):
         data_frame = {'ImageId':images.ImageId.hex(), 'DateTaken':images.DateTaken.isoformat()}
         data_array.append(data_frame)
     if len(data_array) == 0:
-        return jsonify({"hasMore": False, "imageHashes": []})
-    return jsonify({"hasMore": True, "imageHashes": data_array})
+        return jsonify({'hasMore': False, 'imageHashes': []})
+    return jsonify({'hasMore': True, 'imageHashes': data_array})
 
 @app.route('/api/thumbnail/download/<string:image_id>', methods=['GET'])
 @authenticate_user
@@ -161,7 +167,7 @@ def download_thumb(image_id):
         else:
             return jsonify({'status': 'unauthorized'}), 401
     except:
-        return "Unable to find image file", 500
+        return 'Unable to find image file', 500
 
 @app.route('/api/image/download/<string:image_id>', methods=['GET'])
 @authenticate_user
@@ -173,7 +179,7 @@ def download_image(image_id):
         image_binary_data.seek(0)
         return send_file(image_binary_data, download_name=f'{image_name}')
     except:
-        return "Unable to find image file", 500
+        return 'Unable to find image file', 500
 
 @app.route('/api/image/info/<string:image_id>', methods=['GET'])
 def get_image_data(image_id):
@@ -189,7 +195,7 @@ def get_image_data(image_id):
         }
         return jsonify(image_json), 200
     except:
-        return "Unable to find image file", 500
+        return 'Unable to find image file', 500
 
 @app.route('/api/delete/<string:image_id>', methods=['POST'])
 @authenticate_user
@@ -248,5 +254,5 @@ def deleting_image_from_album():
         del_image_from_album(session.get('user_id'), bytes.fromhex(json_data.get('image_id')), json_data.get('album_id'))
         return jsonify({'status': 'success'}), 200
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True, threaded=True)
