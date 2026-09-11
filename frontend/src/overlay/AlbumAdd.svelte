@@ -8,7 +8,7 @@
 
     async function createNewAlbum(albumName) {
         
-        const url = `http://${baseUrlState.currentIP}/api/albums/create`
+        const url = `${baseUrlState.currentIP}/api/albums/create`
         const details = {album_name: albumName}
         
         if (details.album_name) {

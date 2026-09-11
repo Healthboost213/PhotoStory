@@ -24,7 +24,7 @@
 
     async function startAuthenticate () {
         
-        const url = `http://${baseUrlState.currentIP}/api/user`
+        const url = `${baseUrlState.currentIP}/api/user`
         const response = await fetch(url, {method: "POST", credentials: "include"})
         const result = await response.json()
         
@@ -52,7 +52,7 @@
 
     async function initialiseAlbumList () {
 
-        const url = `http://${baseUrlState.currentIP}/api/albums/list`
+        const url = `${baseUrlState.currentIP}/api/albums/list`
         const request = await fetch(url, {method: "GET", credentials: "include"})
         const response = await request.json()
                 

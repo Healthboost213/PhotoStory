@@ -10,7 +10,7 @@
 
     async function loginUser() {
         
-        const url = `http://${baseUrlState.currentIP}/api/authenticate`
+        const url = `${baseUrlState.currentIP}/api/authenticate`
         const details = {username: username, password: password}
 
         const response = await fetch(url, {method: "POST", body: JSON.stringify(details), credentials: "include", headers: {"Content-Type":"application/json"}})

@@ -23,7 +23,7 @@
     }
 
     async function logOutUser() {
-        const url = `http://${baseUrlState.currentIP}/api/logout`
+        const url = `${baseUrlState.currentIP}/api/logout`
         const response = await fetch(url, {method: "POST", credentials: "include"})
         const result = await response.json()
         window.location.reload()
@@ -34,7 +34,7 @@
         if (currentAlbum === "All") return
         if (currentAlbum === "Favourite") return
         
-        const url = `http://${baseUrlState.currentIP}/api/albums/delete`
+        const url = `${baseUrlState.currentIP}/api/albums/delete`
         const message = {album_id: albumObject[currentAlbum]}
 
         const request = await fetch(url, {method: "POST", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})

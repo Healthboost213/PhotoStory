@@ -6,7 +6,7 @@
 
     function enterIpAddress () {
         
-        let ipAddressEntered = prompt("Enter IP Address of the Endpoint (e.g. 127.0.0.1:5000)")
+        let ipAddressEntered = prompt("Enter IP Address of the Endpoint (e.g. http://127.0.0.1:5000)")
         let ipAddressRegex = null
         let localhostRegex = new RegExp("localhost:\\d{1,5}")
 
