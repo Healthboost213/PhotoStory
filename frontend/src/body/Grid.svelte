@@ -51,6 +51,7 @@
                 for (const [k, v] of Object.entries(result.imageHashes)) {
                     photos.push(v.ImageId)
                 }
+                photoOffset += 50
                 hasMoreToLoad = true
             } else {
                 hasMoreToLoad = false
@@ -74,7 +75,6 @@
                 entries.forEach((entry) => {
                     if (entry.isIntersecting === true && hasMoreToLoad === true) {
                         getPhotosList()
-                        photoOffset += 50
                     }
                 })
             }
@@ -134,6 +134,7 @@
 
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-auto-rows: 1fr;
         gap: 10px;
 
         flex: 1;
@@ -149,9 +150,9 @@
 
         min-width: 0;
         width: 100%;
+        aspect-ratio: 1/1;
         border-radius: 5%;
-        aspect-ratio: 1 / 1;
-
+                
         background-color: var(--image-area-background);
 
     }
@@ -162,8 +163,9 @@
         width: 100%;
         height: 100%;
         border-radius: 5%;
-        transition: 0.2s
-
+        transition: 0.2s; 
+        object-fit: cover;
+    
     }
 
     .image-style:hover {
