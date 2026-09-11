@@ -80,7 +80,6 @@ def scrape_exif(file_data):
     except Exception as e:
         print(e)
 
-    print(exif_metadata)
     return exif_metadata
 
 def generate_thumbnails(file_data):
