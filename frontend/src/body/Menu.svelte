@@ -16,7 +16,7 @@
     async function fileUpload() {
 
         const fileList = Array.from(document.getElementById("secretUploadButton").files)
-        const url = `http://${baseUrlState.currentIP}/api/upload`
+        const url = `${baseUrlState.currentIP}/api/upload`
 
         uploadState.globalCurrentTotal = fileList.length
         

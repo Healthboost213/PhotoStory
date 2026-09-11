@@ -43,7 +43,7 @@
     async function getPhotosList () {
         
         if (targetAlbumId) {
-            const url = `http://${baseUrlState.currentIP}/api/thumbnail/${targetAlbumId}/${photoOffset}`
+            const url = `${baseUrlState.currentIP}/api/thumbnail/${targetAlbumId}/${photoOffset}`
             const response = await fetch(url, {method: "POST", credentials: "include"})
             const result = await response.json()
 
@@ -101,7 +101,7 @@
     {#each photos as photoHash}
             
         <div class="image-area">
-            <img src="http://{baseUrlState.currentIP}/api/thumbnail/download/{photoHash}" onclick={openImagePreview} id={photoHash} alt="" class="image-style">
+            <img src="{baseUrlState.currentIP}/api/thumbnail/download/{photoHash}" onclick={openImagePreview} id={photoHash} alt="" class="image-style">
         </div>
 
     {/each}

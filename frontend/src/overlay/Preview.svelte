@@ -36,7 +36,7 @@
     }
 
     async function getImageDetails () {
-        const url = `http://${baseUrlState.currentIP}/api/image/info/${currentImageId}`
+        const url = `${baseUrlState.currentIP}/api/image/info/${currentImageId}`
         const request = await fetch(url, {method: "GET", credentials: "include"})
         const response = await request.json()
 
@@ -48,13 +48,13 @@
     }
 
     function openImageInNewTab() {
-        const url = `http://${baseUrlState.currentIP}/api/image/download/${currentImageId}`
+        const url = `${baseUrlState.currentIP}/api/image/download/${currentImageId}`
         window.open(url, '_blank')
     }
 
     async function deleteImage() {
         
-        const url = `http://${baseUrlState.currentIP}/api/delete/${currentImageId}`
+        const url = `${baseUrlState.currentIP}/api/delete/${currentImageId}`
         const response = await fetch(url, {method: "POST", credentials: "include"})
         const result = await response.json()
         closePreview()
@@ -110,7 +110,7 @@
 
     <div class="image-preview">
 
-        <img src="http://{baseUrlState.currentIP}/api/image/download/{currentImageId}" class="image-style" alt="">
+        <img src="{baseUrlState.currentIP}/api/image/download/{currentImageId}" class="image-style" alt="">
 
     </div>
 

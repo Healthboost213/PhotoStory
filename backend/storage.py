@@ -1,14 +1,15 @@
 from io import BytesIO
 from botocore.client import Config
 from pathlib import Path
-import boto3, os
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import boto3, os, secrets
 
 class FileStorage:
 
     def upload(self, filename, file_ext, file_data):
         pass
 
-    def upload_thumbnail(self, filename):
+    def upload_thumbnail(self, filename, file_data):
         pass
 
     def download(self, filename, file_ext):
@@ -61,28 +62,62 @@ class LocalStorage(FileStorage):
         self.__ThumbnailDirectory = Path(__file__).resolve().parent / 'PhotoStory' / 'Thumbnails'
         self.__ImageDirectory.mkdir(parents=True, exist_ok=True)
         self.__ThumbnailDirectory.mkdir(parents=True, exist_ok=True)
+        if os.getenv('IMAGE_ENCRYPTION_KEY') is not None:
+            self.__Encryption = AESGCM(bytes.fromhex(os.getenv('IMAGE_ENCRYPTION_KEY')))
         
     def upload(self, filename, file_ext, file_data):
         creation_path = self.__ImageDirectory / f'{filename}{file_ext}'
+
+        try:
+            nonce = secrets.token_bytes(12)
+            ciphertext = self.__Encryption.encrypt(nonce, file_data, None)
+            payload = b''.join([nonce, ciphertext])
+        except:
+            payload = file_data
+
         with open(creation_path, 'wb') as file:
-            file.write(file_data)
+            file.write(payload)
     
     def upload_thumbnail(self, filename, file_data):
         creation_path = self.__ThumbnailDirectory / f'{filename}.webp'
+
+        try:
+            nonce = secrets.token_bytes(12)
+            ciphertext = self.__Encryption.encrypt(nonce, file_data, None)
+            payload = b''.join([nonce, ciphertext])
+        except:
+            payload = file_data
+
         with open(creation_path, 'wb') as file:
-            file.write(file_data)
+            file.write(payload)
 
     def download(self, filename, file_ext):
         current_file_path = self.__ImageDirectory / f'{filename}{file_ext}'
         with open(current_file_path, 'rb') as file:
-            data = BytesIO(file.read())
-        return data
+            data = memoryview(file.read())
+            try:
+                nonce = data[:12]
+                ciphertext = data[12:]
+                plaintext = BytesIO(self.__Encryption.decrypt(nonce, ciphertext, None))
+                print('Activated Encrypted Route')
+            except:
+                plaintext = BytesIO(data)
+
+        return plaintext
     
     def download_thumb(self, filename):
         current_file_path = self.__ThumbnailDirectory / f'{filename}.webp'
         with open(current_file_path, 'rb') as file:
-            data = BytesIO(file.read())
-        return data
+            data = memoryview(file.read())
+            try:
+                nonce = data[:12]
+                ciphertext = data[12:]
+                plaintext = BytesIO(self.__Encryption.decrypt(nonce, ciphertext, None))
+                print('Activated Encrypted Route')
+            except:
+                plaintext = BytesIO(data)
+
+        return plaintext
     
     def delete_func(self, filename):
         for path in self.__ImageDirectory.glob(filename + '*'):

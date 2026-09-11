@@ -41,21 +41,21 @@ class Albums(Base):
 
     AlbumId : Mapped[str] = mapped_column(primary_key=True, index=True)
     AlbumName : Mapped[str] = mapped_column()
-    AlbumOwner : Mapped[str] = mapped_column(ForeignKey('Users.UserName', ondelete="CASCADE"))
+    AlbumOwner : Mapped[str] = mapped_column(ForeignKey('Users.UserName', ondelete='CASCADE'))
 
 class UserImages(Base):
 
     __tablename__ = 'UserImages'
 
-    ImageId : Mapped[bytes] = mapped_column(ForeignKey('Images.ImageId', ondelete="CASCADE"), primary_key=True)
-    UserName: Mapped[str] = mapped_column(ForeignKey('Users.UserName', ondelete="CASCADE"), primary_key=True)
+    ImageId : Mapped[bytes] = mapped_column(ForeignKey('Images.ImageId', ondelete='CASCADE'), primary_key=True)
+    UserName: Mapped[str] = mapped_column(ForeignKey('Users.UserName', ondelete='CASCADE'), primary_key=True)
 
 class AlbumImages(Base):
     
     __tablename__ = 'ImageAlbums'
 
-    ImageId : Mapped[bytes] = mapped_column(ForeignKey('Images.ImageId', ondelete="CASCADE"), primary_key=True)
-    AlbumId : Mapped[str] = mapped_column(ForeignKey('Albums.AlbumId', ondelete="CASCADE"), primary_key=True)
+    ImageId : Mapped[bytes] = mapped_column(ForeignKey('Images.ImageId', ondelete='CASCADE'), primary_key=True)
+    AlbumId : Mapped[str] = mapped_column(ForeignKey('Albums.AlbumId', ondelete='CASCADE'), primary_key=True)
 
 @event.listens_for(engine, 'connect')
 def set_sqlite_pragma(dbapi_connection, connection_record):
@@ -128,7 +128,7 @@ def insert_image(img_id, img_name, img_x_res, img_y_res, img_date_taken, exif_da
             session.add(user_linker)
             session.flush()
 
-            album = session.scalars(select(Albums).where(Albums.AlbumOwner == username, Albums.AlbumName == "All")).first()
+            album = session.scalars(select(Albums).where(Albums.AlbumOwner == username, Albums.AlbumName == 'All')).first()
             album_linker = AlbumImages(ImageId=img_id, AlbumId=album.AlbumId)
             session.add(album_linker)
             session.commit()

@@ -15,7 +15,7 @@
             albumIdToMove = derivedAlbums[event.currentTarget.id]
         }
 
-        const url = `http://${baseUrlState.currentIP}/api/albums/move`
+        const url = `${baseUrlState.currentIP}/api/albums/move`
         const message = {image_id: currentImageId, album_id: albumIdToMove}
 
         const request = await fetch(url, {method: "POST", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})
