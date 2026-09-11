@@ -5,6 +5,7 @@ from flask_cors import CORS
 from datetime import timedelta
 from functools import wraps
 from dotenv import load_dotenv
+from pathlib import Path
 import os, json
 
 load_dotenv(override=True)
@@ -23,8 +24,9 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 
+sessionsPath = Path(__file__).resolve().parent / 'flask_sessions'
 app.config['SESSION_TYPE'] = "cachelib"
-app.config['SESSION_CACHELIB'] = FileSystemCache(cache_dir='./flask_sessions', threshold=250)
+app.config['SESSION_CACHELIB'] = FileSystemCache(cache_dir=sessionsPath, threshold=250)
 
 CORS(app, origins=r'^http://.*$', supports_credentials=True)
 Session(app)
