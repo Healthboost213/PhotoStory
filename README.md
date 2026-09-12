@@ -15,23 +15,15 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 - Backend: Flask
 - Database: SQLite
 
-### Short-term Features Planned:
-- Brand New Logo Design
-
 ### Long Term Project Roadmap:
-- [ ] HTTPS + TLS Support
 - [ ] Filtering and Sorting Images
 - [ ] Image Search Functionality
 - [ ] Image Backup + Syncing Utility
 - [ ] Easy set-up with Docker
 
 ### Screenshots:
-
 ![Main Gallery](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1789202353/Screenshot_2026-09-12_140710_ttxv7k.png)
-![Image Preview](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1788697690/Screenshot_2026-09-06_175535_gbgffb.png)
-
-> [!CAUTION]
-> PhotoStory is currently in the MVP phase. There are some security issues that still need ironing out. HTTPS is **NOT** supported yet so please refrain from using this application over public Wi-Fi or exposing it to the internet.  
+![Image Preview](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1788697690/Screenshot_2026-09-06_175535_gbgffb.png)  
 
 > [!NOTE]
 > Moving forward, I have lots of exams to deal with so development will be slow or temporarily halted. Updates aren't guaranteed and I'm not sure I can provide support for this. I only released a simple PoC because I've been working on this project for a long time and it covers the basic essentials I need for my needs. Feel free to modify the code however you please.  
