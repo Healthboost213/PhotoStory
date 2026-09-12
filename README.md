@@ -17,7 +17,6 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 
 ### Short-term Features Planned:
 - Brand New Logo Design
-- Images seperated by Dates
 
 ### Long Term Project Roadmap:
 - [ ] HTTPS + TLS Support
@@ -28,7 +27,7 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 
 ### Screenshots:
 
-![Main Gallery](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1788697691/Screenshot_2026-09-06_175526_oagwua.png)
+![Main Gallery](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1789202353/Screenshot_2026-09-12_140710_ttxv7k.png)
 ![Image Preview](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1788697690/Screenshot_2026-09-06_175535_gbgffb.png)
 
 > [!CAUTION]
