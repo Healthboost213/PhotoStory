@@ -15,7 +15,7 @@
     
     let photoOffset = $state(0)
     let hasMoreToLoad = $state(true)
-    const photos = $state([])
+    const photos = $state({})
 
     let deleteRefresh = $state(0)
 
@@ -41,7 +41,6 @@
     }
 
     async function getPhotosList () {
-        
         if (targetAlbumId) {
             const url = `${baseUrlState.currentIP}/api/thumbnail/${targetAlbumId}/${photoOffset}`
             const response = await fetch(url, {method: "POST", credentials: "include"})
@@ -49,15 +48,19 @@
 
             if (result.hasMore) {
                 for (const [k, v] of Object.entries(result.imageHashes)) {
-                    photos.push(v.ImageId)
+                    if (!photos[v.DateTaken]) {
+                        photos[v.DateTaken] = []
+                        photos[v.DateTaken].push(v.ImageId)
+                    } else {
+                        photos[v.DateTaken].push(v.ImageId)
+                    }   
                 }
+                photoOffset += 50
                 hasMoreToLoad = true
             } else {
                 hasMoreToLoad = false
                 throbberText.innerText = "This Is The End."
-            }
-
-            
+            } 
         }
     }
 
@@ -67,6 +70,57 @@
         getPhotosList()
     }
 
+    function formatDate(dateString) {
+        
+        let dateObj = new Date(dateString)
+        let baseStr = ""
+
+        let month = dateObj.getMonth()
+        switch (month) {
+            case 0: baseStr = "January "
+                break
+            case 1: baseStr = "February "
+                break
+            case 2: baseStr = "March "
+                break
+            case 3: baseStr = "April "
+                break
+            case 4: baseStr = "May "
+                break
+            case 5: baseStr = "June "
+                break
+            case 6: baseStr = "July "
+                break
+            case 7: baseStr = "August "
+                break
+            case 8: baseStr = "September "
+                break
+            case 9: baseStr = "October "
+                break
+            case 10: baseStr = "November "
+                break
+            case 11: baseStr = "December "
+                break
+        }
+
+        let date = dateObj.getDate()
+        switch (date) {
+            case 1: baseStr += String(date) + "st"
+                break;
+            case 2: baseStr += String(date) + "nd"
+                break;
+            case 3: baseStr += String(date) + "rd"
+                break;
+            default: baseStr += String(date) + "th"
+                break;
+        }
+
+        baseStr = baseStr + " " + dateObj.getFullYear()
+
+        return baseStr
+
+    }
+
     $effect(() => {
 
         if (targetAlbumId && sentinel) {
@@ -74,7 +128,6 @@
                 entries.forEach((entry) => {
                     if (entry.isIntersecting === true && hasMoreToLoad === true) {
                         getPhotosList()
-                        photoOffset += 50
                     }
                 })
             }
@@ -98,11 +151,15 @@
     
 <div class="grid-area">
 
-    {#each photos as photoHash}
-            
-        <div class="image-area">
-            <img src="{baseUrlState.currentIP}/api/thumbnail/download/{photoHash}" onclick={openImagePreview} id={photoHash} alt="" class="image-style">
-        </div>
+    {#each Object.entries(photos) as [date, array]}
+        
+        <h4 class="date-text">{formatDate(date)}</h4>
+
+        {#each array as photoHash}
+            <div class="image-area">
+                <img src="{baseUrlState.currentIP}/api/thumbnail/download/{photoHash}" onclick={openImagePreview} id={photoHash} alt="" class="image-style">
+            </div>
+        {/each}
 
     {/each}
         
@@ -134,6 +191,7 @@
 
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        align-content: start;
         gap: 10px;
 
         flex: 1;
@@ -149,9 +207,9 @@
 
         min-width: 0;
         width: 100%;
+        aspect-ratio: 1/1;
         border-radius: 5%;
-        aspect-ratio: 1 / 1;
-
+                
         background-color: var(--image-area-background);
 
     }
@@ -162,14 +220,33 @@
         width: 100%;
         height: 100%;
         border-radius: 5%;
-        transition: 0.2s
-
+        transition: 0.2s; 
+        object-fit: cover;
+    
     }
 
     .image-style:hover {
         cursor: pointer;
-        transform: scale(1.05);
+        transform: scale(1.035);
         transition: 0.2s;
+    }
+
+    .date-text {
+
+        display: flex;
+        justify-content: start;
+        align-items: center;
+
+        max-height: 10px;
+        padding-top: 30px;
+        grid-column: 1 / 6;
+        padding-left: 10px;
+
+        font-size: 20px;
+    }
+
+    .date-text:first-child {
+        padding-top: 0px;
     }
 
     .sentinel {
@@ -178,7 +255,7 @@
         justify-content: center;
         align-items: center;
 
-        height: 60px;
+        height: 90px;
         grid-column: 1 / 6;
     }
 

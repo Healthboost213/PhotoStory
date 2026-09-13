@@ -202,10 +202,10 @@ def get_image_data(image_id):
 @app.route('/api/delete/<string:image_id>', methods=['POST'])
 @authenticate_user
 def delete(image_id):
+    image_ext = os.path.splitext(find_image(session.get('user_id'), bytes.fromhex(image_id))[1])[1]
     is_nolonger_exist = delete_image(session.get('user_id'), bytes.fromhex(image_id))
-    print(is_nolonger_exist)
     if is_nolonger_exist:
-        storage.delete_func(image_id)
+        storage.delete_func(image_id, image_ext)
         return jsonify({'status': 'success', 'isDeleted': True}), 200
     else:
         return jsonify({'status': 'success', 'isDeleted': False}), 200
