@@ -25,7 +25,7 @@
 
     import { baseUrlState } from "../store.svelte.js";
 
-    let { isPreview = $bindable(), currentImageId, refreshGrid, openAlbumMove } = $props()
+    let { isPreview = $bindable(), currentImageId, refreshGrid, openAlbumMove, currentAlbum, albumObject, favouriteID } = $props()
     let imageData = $state({})
 
     let pageState = $state(0)
@@ -57,6 +57,24 @@
         const url = `${baseUrlState.currentIP}/api/delete/${currentImageId}`
         const response = await fetch(url, {method: "POST", credentials: "include"})
         const result = await response.json()
+        closePreview()
+        refreshGrid()
+
+    }
+
+    async function deleteImageFromAlbum() {
+        
+        const url = `${baseUrlState.currentIP}/api/albums/remove`
+        let message
+        if (currentAlbum === "Favourite") {
+            message = {"image_id": currentImageId, "album_id": favouriteID}
+        } else {
+            message = {"image_id": currentImageId, "album_id": albumObject[currentAlbum]}
+        }
+        
+        const response = await fetch(url, {method: "POST", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})
+        const result = await response.json()
+
         closePreview()
         refreshGrid()
 
@@ -170,7 +188,7 @@
             {/if}
 
             {#if pageState === 1}
-                {@render infoDiv(cameraIcon, "Make & Model", (imageData.ExifData.camera.make, imageData.ExifData.camera.model))}
+                {@render infoDiv(cameraIcon, "Make & Model", (imageData.ExifData.camera.make + " " + imageData.ExifData.camera.model))}
                 {@render infoDiv(shutterSpeedIcon, "Shutter Speed", (processShutterSpeed(imageData.ExifData.camera.shutter_speed) + " s"))}
                 {@render infoDiv(apertureIcon, "Aperture Size", ("ƒ/" + imageData.ExifData.camera.aperture_size))}
                 {@render infoDiv(isoIcon, "ISO", ("ISO" + imageData.ExifData.camera.iso))}
@@ -190,7 +208,13 @@
 
             <div><button onclick={openImageInNewTab}><img src={linkIcon} alt="" class="action-icon">Open In New Tab</button></div>
             <div><button onclick={openAlbumMove}><img src={folderTreeIcon} alt="" class="action-icon">Add To Album</button></div>
-            <div><button class="delete-button" onclick={deleteImage}><img src={binIcon} alt="" class="action-icon">Delete Image</button></div>
+            <div class="delete-actions">
+                {#if currentAlbum !== "All"}
+                    <button class="delete-button" onclick={deleteImageFromAlbum}><img src={binIcon} alt="" class="action-icon">Remove From Album</button>
+                {/if}
+
+                <button class="delete-button" onclick={deleteImage}><img src={binIcon} alt="" class="action-icon">Delete Image</button>
+            </div>
 
         </div>
 
@@ -451,6 +475,12 @@
         transition: 0.3s;
         background-color: #0d111d;
         cursor: pointer;
+    }
+
+    .delete-actions {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
     }
 
     .delete-button {
