@@ -100,7 +100,6 @@ class LocalStorage(FileStorage):
                 nonce = data[:12]
                 ciphertext = data[12:]
                 plaintext = BytesIO(self.__Encryption.decrypt(nonce, ciphertext, None))
-                print('Activated Encrypted Route')
             except:
                 plaintext = BytesIO(data)
 
@@ -114,7 +113,6 @@ class LocalStorage(FileStorage):
                 nonce = data[:12]
                 ciphertext = data[12:]
                 plaintext = BytesIO(self.__Encryption.decrypt(nonce, ciphertext, None))
-                print('Activated Encrypted Route')
             except:
                 plaintext = BytesIO(data)
 

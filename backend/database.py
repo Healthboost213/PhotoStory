@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, event, select, ForeignKey, delete, update, func, desc, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.dialects.sqlite import insert
 from datetime import date
 from pathlib import Path
 from argon2 import PasswordHasher
@@ -91,16 +92,13 @@ def delete_user(user_id):
 
 def get_user_statistics():
     with Session(engine) as session:
-        user_stmt = select(Users)
-        user_data = session.scalars(user_stmt).all()
+        user_stmt = select(Users, func.count(UserImages.UserName)).outerjoin(UserImages, Users.UserName == UserImages.UserName).group_by(Users.UserName)
+        user_data = session.execute(user_stmt).all()
         user_dict = {}
         for user in user_data:
-            image_stmt = select(func.count()).select_from(UserImages).where(UserImages.UserName == user.UserName)
-            image_count = session.scalars(image_stmt).one()
-            user_dict[user.UserName] = image_count
-
+            user_dict[user[0].UserName] = user[1]
         return user_dict
-            
+
 def authenticate_user_with_db(user_id, password):
     with Session(engine) as session:
         hasher = PasswordHasher()
@@ -112,17 +110,13 @@ def authenticate_user_with_db(user_id, password):
         except VerifyMismatchError:
             return False
 
-# Database Image Operations
-
 def insert_image(img_id, img_name, img_x_res, img_y_res, img_date_taken, exif_data, username):
     with Session(engine) as session:
         try:
 
-            select_stmt = select(Images).where(Images.ImageId == img_id)
-            result = session.scalars(select_stmt).first()
-
-            if result is None:
-                session.add(Images(ImageId=img_id, ImageName=img_name, ImageXRes=img_x_res, ImageYRes=img_y_res, DateTaken=img_date_taken, ExifData=exif_data))
+            insert_stmt = insert(Images).values(ImageId=img_id, ImageName=img_name, ImageXRes=img_x_res, ImageYRes=img_y_res, DateTaken=img_date_taken, ExifData=exif_data)
+            update_stmt = insert_stmt.on_conflict_do_nothing()
+            session.execute(update_stmt)
             
             user_linker = UserImages(ImageId=img_id, UserName=username)
             session.add(user_linker)

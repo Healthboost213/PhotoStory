@@ -15,9 +15,7 @@
     
     let photoOffset = $state(0)
     let hasMoreToLoad = $state(true)
-    const photos = $state({})
-
-    let deleteRefresh = $state(0)
+    let photos = $state({})
 
     let sentinel, throbberText = $state()
 
@@ -66,8 +64,8 @@
 
     function updateDeleteRefreshState() {
         photoOffset = 0
-        photos.length = 0
-        getPhotosList()
+        photos = {}
+        getPhotosList() 
     }
 
     function formatDate(dateString) {
@@ -148,11 +146,11 @@
 </script>
 
 
-    
+
 <div class="grid-area">
 
     {#each Object.entries(photos) as [date, array]}
-        
+            
         <h4 class="date-text">{formatDate(date)}</h4>
 
         {#each array as photoHash}
@@ -170,7 +168,7 @@
     <div class="preview-overlay">
 
         {#if isPreview}
-            <Preview bind:isPreview {currentImageId} refreshGrid={updateDeleteRefreshState} openAlbumMove={openAlbumMove}/>
+            <Preview bind:isPreview {currentImageId} refreshGrid={updateDeleteRefreshState} openAlbumMove={openAlbumMove} {currentAlbum} {albumObject} {favouriteID}/>
         {/if}
             
     </div>
@@ -184,6 +182,7 @@
     </div>
         
 </div>
+
 
 <style>
 
