@@ -91,16 +91,13 @@ def delete_user(user_id):
 
 def get_user_statistics():
     with Session(engine) as session:
-        user_stmt = select(Users)
-        user_data = session.scalars(user_stmt).all()
+        user_stmt = select(Users, func.count(UserImages.UserName)).outerjoin(UserImages, Users.UserName == UserImages.UserName).group_by(Users.UserName)
+        user_data = session.execute(user_stmt).all()
         user_dict = {}
         for user in user_data:
-            image_stmt = select(func.count()).select_from(UserImages).where(UserImages.UserName == user.UserName)
-            image_count = session.scalars(image_stmt).one()
-            user_dict[user.UserName] = image_count
-
+            user_dict[user[0].UserName] = user[1]
         return user_dict
-            
+
 def authenticate_user_with_db(user_id, password):
     with Session(engine) as session:
         hasher = PasswordHasher()
