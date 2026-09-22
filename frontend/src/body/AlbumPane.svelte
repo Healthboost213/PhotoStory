@@ -37,7 +37,7 @@
         const url = `${baseUrlState.currentIP}/api/albums/delete`
         const message = {album_id: albumObject[currentAlbum]}
 
-        const request = await fetch(url, {method: "POST", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})
+        const request = await fetch(url, {method: "DELETE", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})
         const response = await request.json()
         
         if (response.status === "success") {

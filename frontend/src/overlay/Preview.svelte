@@ -55,7 +55,7 @@
     async function deleteImage() {
         
         const url = `${baseUrlState.currentIP}/api/delete/${currentImageId}`
-        const response = await fetch(url, {method: "POST", credentials: "include"})
+        const response = await fetch(url, {method: "DELETE", credentials: "include"})
         const result = await response.json()
         closePreview()
         refreshGrid()
@@ -72,7 +72,7 @@
             message = {"image_id": currentImageId, "album_id": albumObject[currentAlbum]}
         }
         
-        const response = await fetch(url, {method: "POST", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})
+        const response = await fetch(url, {method: "DELETE", body: JSON.stringify(message), credentials: "include", headers: {"Content-Type":"application/json"}})
         const result = await response.json()
 
         closePreview()

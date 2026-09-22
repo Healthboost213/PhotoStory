@@ -184,6 +184,7 @@ def download_image(image_id):
         return 'Unable to find image file', 500
 
 @app.route('/api/image/info/<string:image_id>', methods=['GET'])
+@authenticate_user
 def get_image_data(image_id):
     try:
         image_data = find_image(session.get('user_id'), bytes.fromhex(image_id))
@@ -199,7 +200,7 @@ def get_image_data(image_id):
     except:
         return 'Unable to find image file', 500
 
-@app.route('/api/delete/<string:image_id>', methods=['POST'])
+@app.route('/api/delete/<string:image_id>', methods=['DELETE'])
 @authenticate_user
 def delete(image_id):
     image_ext = os.path.splitext(find_image(session.get('user_id'), bytes.fromhex(image_id))[1])[1]
@@ -232,13 +233,15 @@ def creating_the_album():
         create_album(session.get('user_id'), json_data.get('album_name'))
         return jsonify({'status': 'success'}), 200
 
-@app.route('/api/albums/delete', methods=['POST'])
+@app.route('/api/albums/delete', methods=['DELETE'])
 @authenticate_user
 def deleting_the_album():
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         json_data = request.get_json()
         delete_album(session.get('user_id'), json_data.get('album_id'))
         return jsonify({'status': 'success'}), 200
+    else:
+        return 'Invalid Request', 500
 
 @app.route('/api/albums/move', methods=['POST'])
 @authenticate_user
@@ -247,14 +250,18 @@ def moving_image_to_album():
         json_data = request.get_json()
         add_image_to_album(session.get('user_id'), bytes.fromhex(json_data.get('image_id')), json_data.get('album_id'))
         return jsonify({'status': 'success'}), 200
+    else:
+            return 'Invalid Request', 500
 
-@app.route('/api/albums/remove', methods=['POST'])
+@app.route('/api/albums/remove', methods=['DELETE'])
 @authenticate_user
 def deleting_image_from_album():
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         json_data = request.get_json()
         del_image_from_album(session.get('user_id'), bytes.fromhex(json_data.get('image_id')), json_data.get('album_id'))
         return jsonify({'status': 'success'}), 200
+    else:
+        return 'Invalid Request', 500
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)
