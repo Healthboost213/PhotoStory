@@ -13,7 +13,7 @@ load_dotenv(override=True)
 from database import authenticate_user_with_db, add_user, delete_user, get_user_statistics, check_owner_match
 from database import insert_image, get_list_offset, delete_image, find_image
 from database import get_album_list, create_album, delete_album, add_image_to_album, del_image_from_album
-from image import generate_thumbnails, scrape_metadata, scrape_exif
+from image import generate_thumbnails, scrape_metadata, scrape_exif, validate_image
 from storage import storage
 
 app = Flask(__name__)
@@ -121,31 +121,33 @@ def logout_user():
 @app.route('/api/upload', methods=['POST'])
 @authenticate_user
 def upload():
-
-    if request.method == 'POST':
        
-        files = request.files.getlist('file_upload')
+    file = request.files.get('file_upload')
 
-        if len(files) == 0: 
-            return jsonify({'status': 'failed', 'message': 'No Files Uploaded'}), 400
+    try:
+        
+        filename = file.filename
+        file_ext = os.path.splitext(filename)[1]
+        file_data = file.read()
 
-        for file in files:
+        is_valid = validate_image(file_data)
+        if not is_valid:
+            raise ValueError("Invalid Filetype")
+                
+        image_metadata = scrape_metadata(file_data, filename)
+        exif_metadata = scrape_exif(file_data)
+        file_hash = image_metadata['img_id'].hex()
+        thumbnail_data = generate_thumbnails(file_data)
 
-            filename = file.filename
-            file_ext = os.path.splitext(filename)[1]
-            file_data = file.read()
+        storage.upload(file_hash, file_ext, file_data)
+        storage.upload_thumbnail(file_hash, thumbnail_data)
+
+        insert_image(**image_metadata, exif_data=json.dumps(exif_metadata), username=session.get('user_id'))
+    
+    except ValueError as e:
+        print(e)
+        return jsonify({'status': 'failed'}), 500
             
-            image_metadata = scrape_metadata(file_data, filename)
-            exif_metadata = scrape_exif(file_data)
-            file_hash = image_metadata['img_id'].hex()
-            thumbnail_data = generate_thumbnails(file_data)
-
-            storage.upload(file_hash, file_ext, file_data)
-            storage.upload_thumbnail(file_hash, thumbnail_data)
-
-            insert_image(**image_metadata, exif_data=json.dumps(exif_metadata), username=session.get('user_id'))
-            
-
     return jsonify({'status': 'success'}), 200
 
 @app.route('/api/thumbnail/<string:alb_id>/<int:offset_num>', methods=['POST'])
