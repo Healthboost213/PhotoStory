@@ -86,9 +86,12 @@ def add_user(username, user_password):
 
 def delete_user(user_id):
     with Session(engine) as session:
+        select_stmt = select(UserImages.ImageId, Images.ImageName, func.count(UserImages.ImageId).label("ImageCount")).join(Images, UserImages.ImageId == Images.ImageId).group_by(UserImages.ImageId).having(func.count(UserImages.ImageId).label("ImageCount") == 1).having(UserImages.UserName == user_id)
+        result = session.execute(select_stmt).all()
         delete_stmt = delete(Users).where(Users.UserName == user_id)
-        result = session.execute(delete_stmt)
+        session.execute(delete_stmt)
         session.commit()
+        return result
 
 def get_user_statistics():
     with Session(engine) as session:

@@ -73,7 +73,10 @@ def delete_existing_user():
         if request.method == 'POST':
             form_data = request.form
             for users in form_data.keys():
-                delete_user(users)
+                orphaned_images = delete_user(users)
+                for image in orphaned_images:
+                    storage.delete_func(image[0].hex(), os.path.splitext(image[1])[1])
+
             return redirect('../dashboard')
     else:
         return render_template('error.html')
