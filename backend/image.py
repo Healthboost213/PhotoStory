@@ -108,4 +108,9 @@ def validate_image(file_data):
         print("iswebp")
         return True
 
+    # avif
+    if file_data[4:8] == 0x66747970.to_bytes(length=4, byteorder="big"):
+        print("isavif")
+        return True
+
     return False
