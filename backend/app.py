@@ -13,7 +13,7 @@ load_dotenv(override=True)
 from database import authenticate_user_with_db, add_user, delete_user, get_user_statistics, check_owner_match
 from database import insert_image, get_list_offset, delete_image, find_image
 from database import get_album_list, create_album, delete_album, add_image_to_album, del_image_from_album
-from image import generate_thumbnails, scrape_metadata, scrape_exif
+from image import generate_thumbnails, scrape_metadata, scrape_exif, validate_image
 from storage import storage
 
 app = Flask(__name__)
@@ -73,7 +73,10 @@ def delete_existing_user():
         if request.method == 'POST':
             form_data = request.form
             for users in form_data.keys():
-                delete_user(users)
+                orphaned_images = delete_user(users)
+                for image in orphaned_images:
+                    storage.delete_func(image[0].hex(), os.path.splitext(image[1])[1])
+
             return redirect('../dashboard')
     else:
         return render_template('error.html')
@@ -118,31 +121,33 @@ def logout_user():
 @app.route('/api/upload', methods=['POST'])
 @authenticate_user
 def upload():
-
-    if request.method == 'POST':
        
-        files = request.files.getlist('file_upload')
+    file = request.files.get('file_upload')
 
-        if len(files) == 0: 
-            return jsonify({'status': 'failed', 'message': 'No Files Uploaded'}), 400
+    try:
+        
+        filename = file.filename
+        file_ext = os.path.splitext(filename)[1]
+        file_data = file.read()
 
-        for file in files:
+        is_valid = validate_image(file_data)
+        if not is_valid:
+            raise ValueError("Invalid Filetype")
+                
+        image_metadata = scrape_metadata(file_data, filename)
+        exif_metadata = scrape_exif(file_data)
+        file_hash = image_metadata['img_id'].hex()
+        thumbnail_data = generate_thumbnails(file_data)
 
-            filename = file.filename
-            file_ext = os.path.splitext(filename)[1]
-            file_data = file.read()
+        storage.upload(file_hash, file_ext, file_data)
+        storage.upload_thumbnail(file_hash, thumbnail_data)
+
+        insert_image(**image_metadata, exif_data=json.dumps(exif_metadata), username=session.get('user_id'))
+    
+    except ValueError as e:
+        print(e)
+        return jsonify({'status': 'failed'}), 500
             
-            image_metadata = scrape_metadata(file_data, filename)
-            exif_metadata = scrape_exif(file_data)
-            file_hash = image_metadata['img_id'].hex()
-            thumbnail_data = generate_thumbnails(file_data)
-
-            storage.upload(file_hash, file_ext, file_data)
-            storage.upload_thumbnail(file_hash, thumbnail_data)
-
-            insert_image(**image_metadata, exif_data=json.dumps(exif_metadata), username=session.get('user_id'))
-            
-
     return jsonify({'status': 'success'}), 200
 
 @app.route('/api/thumbnail/<string:alb_id>/<int:offset_num>', methods=['POST'])
@@ -184,6 +189,7 @@ def download_image(image_id):
         return 'Unable to find image file', 500
 
 @app.route('/api/image/info/<string:image_id>', methods=['GET'])
+@authenticate_user
 def get_image_data(image_id):
     try:
         image_data = find_image(session.get('user_id'), bytes.fromhex(image_id))
@@ -199,7 +205,7 @@ def get_image_data(image_id):
     except:
         return 'Unable to find image file', 500
 
-@app.route('/api/delete/<string:image_id>', methods=['POST'])
+@app.route('/api/delete/<string:image_id>', methods=['DELETE'])
 @authenticate_user
 def delete(image_id):
     image_ext = os.path.splitext(find_image(session.get('user_id'), bytes.fromhex(image_id))[1])[1]
@@ -232,13 +238,15 @@ def creating_the_album():
         create_album(session.get('user_id'), json_data.get('album_name'))
         return jsonify({'status': 'success'}), 200
 
-@app.route('/api/albums/delete', methods=['POST'])
+@app.route('/api/albums/delete', methods=['DELETE'])
 @authenticate_user
 def deleting_the_album():
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         json_data = request.get_json()
         delete_album(session.get('user_id'), json_data.get('album_id'))
         return jsonify({'status': 'success'}), 200
+    else:
+        return 'Invalid Request', 500
 
 @app.route('/api/albums/move', methods=['POST'])
 @authenticate_user
@@ -247,14 +255,18 @@ def moving_image_to_album():
         json_data = request.get_json()
         add_image_to_album(session.get('user_id'), bytes.fromhex(json_data.get('image_id')), json_data.get('album_id'))
         return jsonify({'status': 'success'}), 200
+    else:
+            return 'Invalid Request', 500
 
-@app.route('/api/albums/remove', methods=['POST'])
+@app.route('/api/albums/remove', methods=['DELETE'])
 @authenticate_user
 def deleting_image_from_album():
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         json_data = request.get_json()
         del_image_from_album(session.get('user_id'), bytes.fromhex(json_data.get('image_id')), json_data.get('album_id'))
         return jsonify({'status': 'success'}), 200
+    else:
+        return 'Invalid Request', 500
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)

@@ -5,7 +5,7 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 ### Features:
 👥 Multi-User Support built with Privacy and Isolation   
 🗄️ Image Deduplication for Massive Storage Savings  
-⚡ Lightweight Client that consumes only ~15 MB of RAM  
+⚡ Lightweight Client that consumes only ~7 MB of RAM  
 📁 Easy Categorising of Images with Albums Support  
 ☁️ Cloud Storage Support with S3 Compatibility  
 🖥️ Complete Cross-Platform Support for Desktops

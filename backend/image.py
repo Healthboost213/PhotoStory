@@ -78,10 +78,39 @@ def scrape_exif(file_data):
             exif_metadata['gps']['location'] = ''
         
     except Exception as e:
-        print(e)
+        pass
 
     return exif_metadata
 
 def generate_thumbnails(file_data):
     image = pyvips.Image.thumbnail_buffer(file_data, 600, height=600)
     return image.write_to_buffer('.webp', Q=100)
+
+def validate_image(file_data):
+
+    # jpeg
+    if file_data[0:3] == 0xFFD8FF.to_bytes(length=3, byteorder="big"):
+        print('isjpeg')
+        return True
+
+    # png
+    if file_data[0:8] == 0x89504E470D0A1A0A.to_bytes(length=8, byteorder="big"):
+        print('ispng')
+        return True
+
+    # gif
+    if file_data[0:6] == 0x474946383761.to_bytes(length=8, byteorder="big") or file_data[0:6] == 0x474946383961.to_bytes(length=8, byteorder="big"):
+        print('isgif')
+        return True
+
+    # webp
+    if file_data[0:4] == 0x52494646.to_bytes(length=4, byteorder="big"):
+        print("iswebp")
+        return True
+
+    # avif
+    if file_data[4:8] == 0x66747970.to_bytes(length=4, byteorder="big"):
+        print("isavif")
+        return True
+
+    return False

@@ -12,7 +12,7 @@
     let currentImageId = $state("")
 
     let isMove = $state(false)
-    
+    let deleteRefresh = $state(0)
     let photoOffset = $state(0)
     let hasMoreToLoad = $state(true)
     let photos = $state({})
@@ -65,7 +65,9 @@
     function updateDeleteRefreshState() {
         photoOffset = 0
         photos = {}
-        getPhotosList() 
+        deleteRefresh++
+        getPhotosList()
+        
     }
 
     function formatDate(dateString) {
@@ -146,7 +148,7 @@
 </script>
 
 
-
+{#key deleteRefresh}
 <div class="grid-area">
 
     {#each Object.entries(photos) as [date, array]}
@@ -182,6 +184,7 @@
     </div>
         
 </div>
+{/key}
 
 
 <style>
