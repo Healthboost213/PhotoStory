@@ -21,6 +21,10 @@ PhotoStory is a self-hosted image gallery and viewer app built by a fellow photo
 - [ ] Image Backup + Syncing Utility
 - [ ] Easy set-up with Docker
 
+### Install Guide
+
+[Read More Here](./INSTALL.md)
+
 ### Screenshots:
 ![Main Gallery](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1789202353/Screenshot_2026-09-12_140710_ttxv7k.png)
 ![Image Preview](https://res.cloudinary.com/dsjtpsjcc/image/upload/v1788697690/Screenshot_2026-09-06_175535_gbgffb.png)  
